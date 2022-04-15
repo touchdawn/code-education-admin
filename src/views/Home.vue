@@ -17,8 +17,8 @@
 
         <el-submenu index="1">
           <template slot="title">
-            <i class="el-icon-message"></i>
-            <span slot="title">管理</span>
+            <i class="el-icon-s-custom"></i>
+            <span slot="title">用户</span>
           </template>
           <el-menu-item-group>
             <el-menu-item index="1-1" @click="userControlClicked()">用户管理</el-menu-item>
@@ -28,24 +28,29 @@
 
         <el-submenu index="2">
           <template slot="title">
-            <i class="el-icon-message"></i>
+            <i class="el-icon-s-order"></i>
             <span slot="title">课程管理</span>
           </template>
 
           <el-menu-item-group>
             <el-menu-item index="2-1" @click="courseAuditShowClicked()">所有课程</el-menu-item>
           </el-menu-item-group>
+
+          <el-menu-item-group>
+            <el-menu-item index="2-2" @click="videoAuditShowClicked()">待审核章节</el-menu-item>
+          </el-menu-item-group>
+
         </el-submenu>
 
         <el-submenu index="3">
           <template slot="title">
             <i class="el-icon-message"></i>
-            <span slot="title">视频</span>
+            <span slot="title">通知</span>
           </template>
-
           <el-menu-item-group>
-            <el-menu-item index="3-1" @click="videoAuditShowClicked()">待审核章节</el-menu-item>
+            <el-menu-item index="3-1" @click="notificationClicked()">通知管理</el-menu-item>
           </el-menu-item-group>
+
 
 <!--          <el-menu-item-group>-->
 <!--            <el-menu-item index="3-2" @click="videoAuditShowClicked()">视频管理</el-menu-item>-->
@@ -280,6 +285,8 @@
       <course-audit  v-if="showSet.courseAuditShow" style="margin-left: 3%; width: 94%;"> </course-audit>
 
       <video-audit v-if="showSet.videoAuditShow" style="margin-left: 3%; width: 94%;"> </video-audit>
+
+      <notification-manage v-if="showSet.notificationManageShow" style="margin-left: 3%; width: 94%;"> </notification-manage>
     </el-container>
   </el-container>
 </template>
@@ -288,9 +295,10 @@
 import UserControl from "@/views/UserList/UserControl";
 import CourseAudit from "@/views/CourseControl/AllCourse";
 import VideoAudit from "@/views/VideoControl/VideoAudit";
+import NotificationManage from "@/views/Notification/NotificationManage";
 export default {
   name:'Home',
-  components:{UserControl,CourseAudit,VideoAudit},
+  components:{UserControl,CourseAudit,VideoAudit,NotificationManage},
   data() {
     const item = {
       date: '2016-05-02',
@@ -305,6 +313,7 @@ export default {
         userControlShow:false,
         courseAuditShow:false,
         videoAuditShow:false,
+        notificationManageShow:false
         
       },
       tableData: Array(10).fill(item),
@@ -340,7 +349,10 @@ export default {
       this.showSet.courseAuditShow = true
     },
 
-
+    notificationClicked(){
+      this.showReset()
+      this.showSet.notificationManageShow = true
+    },
     showReset(){
       for (const key in this.showSet) {
         this.showSet[key] = false

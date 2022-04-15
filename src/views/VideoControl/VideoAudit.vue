@@ -73,10 +73,10 @@
           <!--                     @click.native.prevent="deleteRow(scope.$index, tableData,scope)">编辑 <i class="el-icon-edit"></i></el-button>-->
           <el-button type="warning" size="mini"
                      @click.native.prevent="detailClicked(scope.$index, tableData,scope)">详情 <i class="el-icon-edit"></i></el-button>
-          <el-button type="danger"  size="mini" v-if="scope.row.status === 1"
-                     @click.native.prevent="changeStatus(scope.$index, tableData)">禁用 <i class="el-icon-remove-outline"></i></el-button>
-          <el-button type="success"  size="mini" v-if="scope.row.status === 0"
-                     @click.native.prevent="changeStatus(scope.$index, tableData)">过审 <i class="el-icon-circle-plus-outline"></i></el-button>
+<!--          <el-button type="danger"  size="mini" v-if="scope.row.status === 1"-->
+<!--                     @click.native.prevent="changeStatus(scope.$index, tableData)">禁用 <i class="el-icon-remove-outline"></i></el-button>-->
+<!--          <el-button type="success"  size="mini" v-if="scope.row.status === 0"-->
+<!--                     @click.native.prevent="changeStatus(scope.$index, tableData)">过审 <i class="el-icon-circle-plus-outline"></i></el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -98,6 +98,7 @@
           :father-data="detailProp"
           @changeStatus = "changeStatusEmit($event)"
           @changeRecommend="changeRecommendEmit($event)"
+          @doRefresh = "backFromAuditDetail($event)"
       ></video-audit-detail>
     </el-dialog>
 
@@ -230,7 +231,7 @@ export default {
       console.log(this.detailProp)
       // this.currentIndex = index
       this.detailShow = true
-      this.dialogVisible = true
+      // this.dialogVisible = true
     },
 
     changeStatus(index,data){
@@ -265,6 +266,19 @@ export default {
     changeRecommendEmit(msg){
       this.tableData[msg].score = ( this.tableData[msg].score === 0 ? 5 : 0)
 
+    },
+
+    backFromAuditDetail(msg){
+      console.log('backFromAuditDetail')
+      this.detailShow = false
+      this.tableData = []
+      this.pageInfo.total = {
+        current: 1,
+        size: 10,
+        total: 0
+      }
+      this.getCourseList()
+      console.log(msg)
     },
 
     getCourseList(){
