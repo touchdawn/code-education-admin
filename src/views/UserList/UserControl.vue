@@ -1,10 +1,10 @@
 <template>
   <div>
     <div style="margin: 20px 20px 20px 20px">
-      <el-input style="width: 200px;" suffix-icon="el-icon-search" placeholder="姓名" ></el-input>
-      <el-input style="width: 200px;" suffix-icon="el-icon-message" placeholder="邮箱" class="ml-5"></el-input>
-      <el-input style="width: 200px;" suffix-icon="el-icon-phone" placeholder="手机号" class="ml-5"></el-input>
-      <el-button class="ml-5" type="primary">搜索</el-button>
+      <el-input style="width: 200px;" suffix-icon="el-icon-search" v-model="searchForm.userName" placeholder="姓名" ></el-input>
+      <el-input style="width: 200px;" suffix-icon="el-icon-message" v-model="searchForm.email" placeholder="邮箱" class="ml-5"></el-input>
+      <el-input style="width: 200px;" suffix-icon="el-icon-phone" v-model="searchForm.phone" placeholder="手机号" class="ml-5"></el-input>
+      <el-button class="ml-5" type="primary" @click="searchClick">搜索</el-button>
     </div>
     <div style="margin: 10px 0">
       <el-button class="ml-5" type="primary">新增
@@ -84,6 +84,11 @@ export default {
     };
     return {
       userDt:{},
+      searchForm:{
+        userName:'',
+        email:'',
+        phone:'',
+      },
       pageInfo:{
         current:1,
         size:10,
@@ -121,6 +126,13 @@ export default {
     this.getUserList()
   },
   methods:{
+    searchClick(){
+      this.tableData = []
+      this.getUserList()
+    },
+
+
+
     deleteRow(index,data,s){
       console.log(index)
       console.log(data)
@@ -152,16 +164,14 @@ export default {
       });
     },
 
-
-
-
     getUserList(){
       let that = this
       that.$axios({
         method: "POST",//指定请求方式
         url: common.commonLocalServer + "/users/getAllByPage",//请求接口（相对接口，后面会介绍到）
         headers:{token:this.userDt.token},
-        data:that.pageInfo
+        data: {"pageInfo": that.pageInfo,
+          "searchMap":that.searchForm}
       }).then(function(res){
         console.log(res.data)
         if (res.data.flag === "T" ){
@@ -169,6 +179,8 @@ export default {
           // console.log( res.data)
           that.tableData = res.data.data.records
           that.pageInfo.total = res.data.data.total
+          console.log(res.data.data.current)
+          that.pageInfo.current = 0
           console.log(that.tableData )
         } else {
           that.$message({

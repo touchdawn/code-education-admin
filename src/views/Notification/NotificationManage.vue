@@ -1,13 +1,13 @@
 <template>
   <div>
-    <div style="margin: 20px 20px 20px 20px">
-      <el-input style="width: 200px;" suffix-icon="el-icon-search" placeholder="标题" ></el-input>
-      <el-input style="width: 200px;" suffix-icon="el-icon-message" placeholder="内容" class="ml-5"></el-input>
-      <el-input style="width: 200px;" suffix-icon="el-icon-phone" placeholder="发布时间" class="ml-5"></el-input>
-      <el-button class="ml-5" type="primary">搜索</el-button>
-    </div>
+<!--    <div style="margin: 20px 20px 20px 20px">-->
+<!--      <el-input style="width: 200px;" suffix-icon="el-icon-search" placeholder="标题" ></el-input>-->
+<!--      <el-input style="width: 200px;" suffix-icon="el-icon-message" placeholder="内容" class="ml-5"></el-input>-->
+<!--      <el-input style="width: 200px;" suffix-icon="el-icon-phone" placeholder="发布时间" class="ml-5"></el-input>-->
+<!--      <el-button class="ml-5" type="primary">搜索</el-button>-->
+<!--    </div>-->
     <div style="margin: 10px 0">
-      <el-button class="ml-5" type="primary">新增
+      <el-button class="ml-5" type="primary" @click="dialogFormVisible = true">新增
         <i class="el-icon-circle-plus-outline"></i>
       </el-button>
     </div>
@@ -52,6 +52,27 @@
           :total="pageInfo.total">
       </el-pagination>
     </div>
+
+    <el-dialog title="新增通知" :visible.sync="dialogFormVisible" :before-close="doClose" >
+      <el-form :model="addForm" style="width: 880px;">
+        <el-form-item label="通知标题" label-width="120px">
+          <el-input v-model="addForm.title" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="通知内容" label-width="120px">
+          <el-input
+              type="textarea"
+              :rows="9"
+              placeholder="请输入内容"
+              v-model="addForm.content">
+          </el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
+
   </div>
 
 </template>
@@ -63,6 +84,11 @@ export default {
   name: "NotificationManage",
   data () {
     return {
+      dialogFormVisible: false,
+      addForm:{
+        title:'',
+        content:''
+      },
       userDt:{},
       tableData: [],
       pageInfo: {
@@ -111,6 +137,12 @@ export default {
       if(date){
         return moment(date).format('YYYY年MM月DD日 HH:mm:ss')
       }
+    },
+    doClose(){
+      console.log('close')
+      this.addForm.title = ''
+      this.addForm.content = ''
+      this.dialogFormVisible = false
     },
   }
 }

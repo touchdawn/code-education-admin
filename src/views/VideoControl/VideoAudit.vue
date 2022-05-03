@@ -8,7 +8,7 @@
       <el-input style="width: 200px;" suffix-icon="el-icon-search"
                 placeholder="教师ID" class="ml-5" v-model="searchForm.teacherId"></el-input>
       <!--      <el-input style="width: 200px;" suffix-icon="el-icon-phone" placeholder="状态" class="ml-5"></el-input>-->
-      <el-select class="ml-5" v-model="searchForm.status" placeholder="课程状态">
+      <el-select class="ml-5" v-model="searchForm.status" clearable placeholder="课程状态">
         <el-option
             v-for="item in options"
             :key="item.value"

@@ -125,6 +125,7 @@ export default {
       requestData.status = 8 //已拒绝
       requestData.id = this.fatherData.ID
       requestData.lessonRel = this.fatherData.LESSON_REL
+      requestData.title = this.fatherData.TITLE
 
       that.$axios({
         method: "POST",//指定请求方式
@@ -162,6 +163,7 @@ export default {
       console.log(requestData)
       requestData.status = this.form.STATUS === 0 ? 1 : 0
       requestData.id = this.fatherData.ID
+      requestData.title = this.fatherData.TITLE
       requestData.auditOpinion = '审核通过'
       this.$confirm((requestData.STATUS === 0 ? '确认过审吗?' : '确认禁用吗?'), '提示', {
         confirmButtonText: '确定',

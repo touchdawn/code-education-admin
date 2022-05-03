@@ -15,7 +15,7 @@
   </div>
   <div >
     <form action="" class="login">
-      <p style="margin-top: 30px; color:#343434;">开始，不止开始</p>
+      <p style="margin-top: 30px; color:#343434;">一站式教培·后台</p>
       <!--    <input style="margin-top: 20px;" type="text" placeholder="用户名">-->
       <!--    <input style="margin-top: 10px;" type="password" placeholder="密码">-->
       <!--    <input type="submit" class="btn" value="登  录">-->
@@ -91,7 +91,8 @@ export default {
     getImgSrc(){
       var res = this.randomNum(1,13)
       console.log(res)
-      this.randImgSrc = "http://ra2q5rhzl.hd-bkt.clouddn.com/background/" + res + ".jpg"
+      this.randImgSrc = "\n" +
+          "https://coding-education.xyz/background/" + res + ".jpg"
       // return
     },
 
