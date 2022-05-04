@@ -1,19 +1,19 @@
 <template>
   <div>
     <div style="margin: 20px 20px 20px 20px">
-      <el-input style="width: 200px;" suffix-icon="el-icon-search" v-model="searchForm.userName" placeholder="姓名" ></el-input>
+      <el-input style="width: 200px;" suffix-icon="el-icon-search" v-model="searchForm.name" placeholder="姓名" ></el-input>
       <el-input style="width: 200px;" suffix-icon="el-icon-message" v-model="searchForm.email" placeholder="邮箱" class="ml-5"></el-input>
       <el-input style="width: 200px;" suffix-icon="el-icon-phone" v-model="searchForm.phone" placeholder="手机号" class="ml-5"></el-input>
       <el-button class="ml-5" type="primary" @click="searchClick">搜索</el-button>
     </div>
-    <div style="margin: 10px 0">
-      <el-button class="ml-5" type="primary">新增
-        <i class="el-icon-circle-plus-outline"></i>
-      </el-button>
-      <el-button class="ml-5" type="danger">批量删除
-        <i class="el-icon-remove-outline"></i>
-      </el-button>
-    </div>
+<!--    <div style="margin: 10px 0">-->
+<!--      <el-button class="ml-5" type="primary">新增-->
+<!--        <i class="el-icon-circle-plus-outline"></i>-->
+<!--      </el-button>-->
+<!--      <el-button class="ml-5" type="danger">批量删除-->
+<!--        <i class="el-icon-remove-outline"></i>-->
+<!--      </el-button>-->
+<!--    </div>-->
 
     <el-table :data="tableData" border stripe :header-cell-class-name="headerBg">
       <el-table-column prop="id" label="ID" width="40">
@@ -51,7 +51,7 @@
       <el-table-column label="操作" width="220" >
         <template slot-scope="scope">
           <el-button type="warning" size="mini"
-                     @click.native.prevent="deleteRow(scope.$index, tableData,scope)">编辑 <i class="el-icon-edit"></i></el-button>
+                     @click="editClick(scope.row)">编辑 <i class="el-icon-edit"></i></el-button>
           <el-button type="danger"  size="mini" v-if="scope.row.status === 1"
                      @click.native.prevent="changeStatus(scope.$index, tableData)">禁用 <i class="el-icon-remove-outline"></i></el-button>
           <el-button type="success"  size="mini" v-if="scope.row.status === 0"
@@ -68,6 +68,44 @@
           :total="pageInfo.total">
       </el-pagination>
     </div>
+
+
+    <el-dialog title="用户信息编辑" :visible.sync="userEditVisible" :before-close="doClose" >
+      <el-form :model="userForm" style="width: 880px;">
+        <el-form-item label="用户ID" label-width="120px">
+<!--          <el-input v-model="" autocomplete="off" :disabled="true" ></el-input>-->
+         {{userForm.id}}
+        </el-form-item>
+        <el-form-item label="姓名" label-width="120px">
+          <el-input v-model="userForm.name" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" label-width="120px">
+          <el-input v-model="userForm.email" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号" label-width="120px">
+          <el-input v-model="userForm.phone" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="昵称" label-width="120px">
+          <el-input v-model="userForm.nickName" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="权限" label-width="120px">
+          <el-select v-model="userForm.type" placeholder="请选择权限">
+            <el-option
+                v-for="item in typeList"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value">
+            </el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+
+
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="doClose">取 消</el-button>
+        <el-button type="primary" @click="changeConfirm" >确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -83,9 +121,23 @@ export default {
       address: '上海市普陀区金沙江路 1518 弄'
     };
     return {
+      typeList: [
+        {value: 0, label: '学员'},
+        {value: 1, label: '教员'},
+        {value: 2, label: '管理员'}
+      ],
+      userForm:{
+        id: '0',
+        name:'',
+        email:'',
+        phone:'',
+        nickName:'',
+        type: 0
+      },
+      userEditVisible: false,
       userDt:{},
       searchForm:{
-        userName:'',
+        name:'',
         email:'',
         phone:'',
       },
@@ -126,12 +178,61 @@ export default {
     this.getUserList()
   },
   methods:{
+    changeConfirm(){
+      this.$confirm('是否提交?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log('confirm')
+        this.doUpdate()
+      }).catch(() => {
+      });
+    },
     searchClick(){
       this.tableData = []
       this.getUserList()
     },
 
+    doUpdate(){
+      let that = this
+      that.$axios({
+        method:"POST",
+        url:common.commonLocalServer + '/users/updateUserById',
+        headers:{"token":that.userDt.token},
+        data:that.userForm
+      }).then(function (res) {
+        console.log(res)
+        if(res.data.flag === 'T'){
+          that.$message({
+            message: '更新成功',
+            type: 'success'
+          });
+          that.userEditVisible = false
+          that.getUserList()
+        }else{
+          that.$message({
+            message: '更新失败',
+            type: 'error'
+          });
+        }
+      }).catch(function (err) {
+        console.log(err)
+      })
+    },
 
+    editClick(row){
+      console.log(row)
+      this.userForm={
+        name:row.name,
+        email:row.email,
+        phone:row.phone,
+        nickName:row.nickName,
+        id:row.id,
+        type: row.type
+      }
+      this.userEditVisible = true
+    },
 
     deleteRow(index,data,s){
       console.log(index)
@@ -226,7 +327,19 @@ export default {
 
     formatDate (value) {
       return moment(value).format('YYYY年MM月DD日 HH:mm:ss')
-    }
+    },
+    doClose(){
+      console.log('close')
+      this.userForm={
+        name:'',
+        email:'',
+        phone:'',
+        nickName:'',
+        id: 0,
+        type: 0
+      }
+      this.userEditVisible = false
+    },
   }
 }
 </script>

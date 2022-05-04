@@ -27,19 +27,19 @@
       </el-table-column>
 <!--      <el-table-column prop="senderName" label="发布者"  width="">-->
 <!--      </el-table-column>-->
-      <el-table-column prop="type" label="已读人数" width="100">
-        <template slot-scope="scope">
+<!--      <el-table-column prop="type" label="已读人数" width="100">-->
+<!--        <template slot-scope="scope">-->
 <!--          <el-tag-->
 <!--              :type="getTagType(scope)"-->
 <!--              disable-transitions>{{ getTypeName(scope) }}</el-tag>-->
-        </template>
-      </el-table-column>
+<!--        </template>-->
+<!--      </el-table-column>-->
 
 
       <el-table-column label="操作" width="220" >
         <template slot-scope="scope">
-           <el-button type="danger"  size="mini"
-                     >禁用 <i class="el-icon-remove-outline"></i></el-button>
+           <el-button type="danger"  size="mini" @click="deleteClick(scope.row)">
+                     删除 <i class="el-icon-remove-outline"></i></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -68,8 +68,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button @click="doClose">取 消</el-button>
+        <el-button type="primary" @click="submitClick">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -87,7 +87,8 @@ export default {
       dialogFormVisible: false,
       addForm:{
         title:'',
-        content:''
+        content:'',
+        receiverId:'-1'
       },
       userDt:{},
       tableData: [],
@@ -104,6 +105,81 @@ export default {
   },
 
   methods:{
+    deleteClick(row){
+      console.log(row)
+      this.$confirm('是否删除?', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+      }).then(() => {
+        console.log('confirm')
+        this.doDelete(row)
+      }).catch(() => {
+      });
+    },
+    doDelete(row){
+      console.log('startDelete')
+      console.log(row)
+      var that = this
+      let uploadData = {}
+      uploadData.messageId = row.id
+      uploadData.method = 'deleteNotification'
+      console.log("upload:")
+      console.log(uploadData)
+      that.$axios({
+        method:'POST',
+        url: common.commonLocalServer + "/message/postChangeMessage",
+        data:uploadData,
+        headers:{
+          'token': that.userDt.token
+        },
+      }).then(function (res) {
+        console.log(res)
+        if(res.data.flag === 'T'){
+          that.$message({
+            message: '删除成功',
+            type: 'success'
+          });
+          that.getTableData()
+        }else{
+          that.$message({
+            message: '删除失败',
+            type: 'error'
+          });
+        }
+      }).catch(function (err) {
+        console.log(err)
+      })
+    },
+    submitClick(){
+      let that = this
+      that.addForm.senderId = that.userDt.id
+      that.addForm.parentMessageId = -1
+      that.$axios({
+        method: "post",
+        url: common.commonLocalServer + "/message/addMessage",
+        headers:{
+          'token': that.userDt.token
+        },
+        data: that.addForm
+      }).then(function (res) {
+        console.log(res)
+        if (res.data.flag === 'T') {
+          that.$message({
+            message: '新增成功',
+            type: 'success'
+          });
+          that.dialogFormVisible = false
+        } else {
+          that.$message({
+            message: 'error',
+            type: 'error'
+          });
+        }
+      }).catch(function (err) {
+        console.log(err)
+      })
+    },
     getTableData() {
       var that = this
       that.$axios({

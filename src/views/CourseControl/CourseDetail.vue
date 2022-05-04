@@ -48,7 +48,7 @@
       <el-button type="danger" v-if="fatherData.status === 1" @click="changeStatus">禁 用</el-button>
       <el-button type="success" v-if="fatherData.status === 0" @click="changeStatus">启 用</el-button>
 
-      <el-button type="success" v-if="fatherData.status === 1" @click="videoClick">去视频</el-button>
+      <el-button type="success" v-if="fatherData.status === 1" @click="videoClick">教学详情</el-button>
 
     </div>
   </div>
