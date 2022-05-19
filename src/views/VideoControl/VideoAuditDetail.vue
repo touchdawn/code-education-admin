@@ -126,7 +126,7 @@ export default {
       requestData.id = this.fatherData.ID
       requestData.lessonRel = this.fatherData.LESSON_REL
       requestData.title = this.fatherData.TITLE
-
+      requestData.reason = this.refuseForm.reason
       that.$axios({
         method: "POST",//指定请求方式
         url: common.commonLocalServer + '/admin/updateSectionStatus',
@@ -144,7 +144,8 @@ export default {
           });
           that.innerVisible = false
           that.refuseForm.reason = ''
-          that.$emit('doRefresh',1)
+          // that.$emit('doRefresh',1)
+          that.backAndFresh()
 
         } else {
           that.$message({
@@ -164,6 +165,7 @@ export default {
       requestData.status = this.form.STATUS === 0 ? 1 : 0
       requestData.id = this.fatherData.ID
       requestData.title = this.fatherData.TITLE
+      requestData.lessonRel = this.fatherData.LESSON_REL
       requestData.auditOpinion = '审核通过'
       this.$confirm((requestData.STATUS === 0 ? '确认过审吗?' : '确认禁用吗?'), '提示', {
         confirmButtonText: '确定',
@@ -175,7 +177,10 @@ export default {
           method: "POST",//指定请求方式
           url: common.commonLocalServer + "/admin/updateSectionStatus",//请求接口（相对接口，后面会介绍到）
           headers:{token:this.userDt.token},
-          data:requestData
+          data:requestData,
+          params: {
+            auditOpinion: requestData.auditOpinion,
+          },
         }).then(function (res){
           console.log(res)
           if (res.data.flag === 'T'){
@@ -185,6 +190,7 @@ export default {
             });
             that.form.STATUS = (that.form.STATUS === 0 ? 1 : 0)
             console.log(that.form)
+            that.backAndFresh()
             // that.$emit('refresh')
           } else {
             that.$message({
@@ -255,6 +261,10 @@ export default {
     },
     urlProcess(input){
       return common.storageUrl + input
+    },
+
+    backAndFresh(){
+      this.$emit('doRefresh')
     },
 
     videoClick(){

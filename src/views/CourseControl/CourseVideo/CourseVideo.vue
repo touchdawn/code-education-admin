@@ -28,8 +28,8 @@
 
 
   <el-dialog title="章节详情" :visible.sync="mdVisible" :before-close="doClose" >
-    <div>
-      <mavon-editor v-model="mdValue" :subfield="false" :defaultOpen="defaultData"
+    <div style="height: 600px">
+      <mavon-editor v-model="mdValue" :subfield="false" :defaultOpen="defaultData" style="height: 600px"
                     :toolbarsFlag="false" :boxShadow="false" />
     </div>
   </el-dialog>

@@ -23,6 +23,9 @@
           <el-menu-item-group>
             <el-menu-item index="1-1" @click="userControlClicked()">用户管理</el-menu-item>
           </el-menu-item-group>
+          <el-menu-item-group>
+            <el-menu-item index="1-2" @click="teacherApplicationClicked()">教员申请</el-menu-item>
+          </el-menu-item-group>
         </el-submenu>
 
 
@@ -286,6 +289,8 @@
 
       <video-audit v-if="showSet.videoAuditShow" style="margin-left: 3%; width: 94%;"> </video-audit>
 
+      <teacher-application v-if="showSet.teacherApplicationShow" style="margin-left: 3%; width: 94%;"> </teacher-application>
+
       <notification-manage v-if="showSet.notificationManageShow" style="margin-left: 3%; width: 94%;"> </notification-manage>
     </el-container>
   </el-container>
@@ -296,9 +301,10 @@ import UserControl from "@/views/UserList/UserControl";
 import CourseAudit from "@/views/CourseControl/AllCourse";
 import VideoAudit from "@/views/VideoControl/VideoAudit";
 import NotificationManage from "@/views/Notification/NotificationManage";
+import TeacherApplication from "@/views/UserList/TeacherApplication";
 export default {
   name:'Home',
-  components:{UserControl,CourseAudit,VideoAudit,NotificationManage},
+  components:{UserControl,CourseAudit,VideoAudit,NotificationManage,TeacherApplication},
   data() {
     const item = {
       date: '2016-05-02',
@@ -313,8 +319,8 @@ export default {
         userControlShow:false,
         courseAuditShow:false,
         videoAuditShow:false,
-        notificationManageShow:false
-        
+        notificationManageShow:false,
+        teacherApplicationShow:false
       },
       tableData: Array(10).fill(item),
       isCollapse:false,
@@ -342,6 +348,11 @@ export default {
     userControlClicked(){
       this.showReset()
       this.showSet.userControlShow = true
+    },
+
+    teacherApplicationClicked(){
+      this.showReset()
+      this.showSet.teacherApplicationShow = true
     },
 
     courseAuditShowClicked(){

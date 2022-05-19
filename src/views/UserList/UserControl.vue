@@ -1,7 +1,7 @@
 <template>
   <div>
     <div style="margin: 20px 20px 20px 20px">
-      <el-input style="width: 200px;" suffix-icon="el-icon-search" v-model="searchForm.name" placeholder="姓名" ></el-input>
+      <el-input style="width: 200px;" suffix-icon="el-icon-search" v-model="searchForm.name" placeholder="用户名" ></el-input>
       <el-input style="width: 200px;" suffix-icon="el-icon-message" v-model="searchForm.email" placeholder="邮箱" class="ml-5"></el-input>
       <el-input style="width: 200px;" suffix-icon="el-icon-phone" v-model="searchForm.phone" placeholder="手机号" class="ml-5"></el-input>
       <el-button class="ml-5" type="primary" @click="searchClick">搜索</el-button>
@@ -18,7 +18,7 @@
     <el-table :data="tableData" border stripe :header-cell-class-name="headerBg">
       <el-table-column prop="id" label="ID" width="40">
       </el-table-column>
-      <el-table-column prop="name" label="姓名" width="180">
+      <el-table-column prop="name" label="用户名" width="180">
       </el-table-column>
 
       <el-table-column prop="email" label="邮箱">
@@ -70,23 +70,26 @@
     </div>
 
 
-    <el-dialog title="用户信息编辑" :visible.sync="userEditVisible" :before-close="doClose" >
-      <el-form :model="userForm" style="width: 880px;">
+    <el-dialog title="用户信息编辑" :visible.sync="userEditVisible" :before-close="doClose">
+      <el-form :model="userForm" style="width: 880px; ">
         <el-form-item label="用户ID" label-width="120px">
 <!--          <el-input v-model="" autocomplete="off" :disabled="true" ></el-input>-->
          {{userForm.id}}
         </el-form-item>
-        <el-form-item label="姓名" label-width="120px">
-          <el-input v-model="userForm.name" autocomplete="off"></el-input>
+        <el-form-item label="用户名" label-width="120px">
+          <el-input v-model="userForm.name" style="width: 680px" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="邮箱" label-width="120px">
-          <el-input v-model="userForm.email" autocomplete="off"></el-input>
+          <el-input v-model="userForm.email" style="width: 680px" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="手机号" label-width="120px">
-          <el-input v-model="userForm.phone" autocomplete="off"></el-input>
+          <el-input v-model="userForm.phone" style="width: 680px" autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="昵称" label-width="120px">
-          <el-input v-model="userForm.nickName" autocomplete="off"></el-input>
+          <el-input v-model="userForm.nickName" style="width: 680px" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" label-width="120px" >
+          <el-input v-model="userForm.password" style="width: 680px" show-password autocomplete="off"></el-input>
         </el-form-item>
         <el-form-item label="权限" label-width="120px">
           <el-select v-model="userForm.type" placeholder="请选择权限">
@@ -132,6 +135,7 @@ export default {
         email:'',
         phone:'',
         nickName:'',
+        password:'',
         type: 0
       },
       userEditVisible: false,
@@ -196,6 +200,10 @@ export default {
 
     doUpdate(){
       let that = this
+      if (that.userForm.password === '' || that.userForm.password === null){
+        that.userForm.remove('password')
+      }
+
       that.$axios({
         method:"POST",
         url:common.commonLocalServer + '/users/updateUserById',
@@ -229,6 +237,7 @@ export default {
         phone:row.phone,
         nickName:row.nickName,
         id:row.id,
+        password: row.password,
         type: row.type
       }
       this.userEditVisible = true
